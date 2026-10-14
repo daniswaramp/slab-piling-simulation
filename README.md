@@ -1,4 +1,4 @@
-# Slab pile cooling in an open yard
+# Slab pile cooling simulation in an open slabyard
 
 How long a stack of hot slabs holds its heat before a yard can release it. Transient conduction through
 the whole pile, with the exposed faces, the weather, the ground under the bottom slab and the contact
