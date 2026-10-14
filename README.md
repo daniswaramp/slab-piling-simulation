@@ -12,6 +12,14 @@ about 2,500 lines, is carried inside the notebook itself, so it needs no module 
 Jupyter or Colab, run all cells, and the whole study reproduces: geometry, mesh, both orthogonal section
 solves, the analytical verification, the figures and the uncertainty envelope.
 
+## Run it
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daniswaramp/slab-piling-simulation/blob/main/from-other/slab_piling_thermal_standalone.ipynb)
+
+Colab already carries numpy, scipy, pandas, matplotlib, plotly and ipywidgets, which is everything the
+notebook imports, so the badge above runs it with no setup. Locally it wants the same six packages. A full
+run takes about three minutes: ten seconds per section solve and the rest in the uncertainty ensemble.
+
 ## The pile this repository ships with
 
 Five slabs of mixed size, all charged at 850 °C, standing in a 30 °C yard with a 0.8 m/s wind, a 25 °C
@@ -132,7 +140,10 @@ $$Ra_L = \frac{g\beta(\theta_s - \theta_\infty)L^3}{\nu^2}, \qquad h_{nat} = \fr
 
 Wind. Free and forced convection combine in quadrature,
 $h_{conv} = (h_{nat}^3 + h_{forced}^3)^{1/3}$, with $h_{forced} = 3.8\,V^{0.78}$ W/m²K for wind speed $V$
-in m/s [8]. The flat plate correlation is deliberately not used here: with a fetch between 0.3 m and 10 m
+in m/s. That coefficient is an order of magnitude fit for air moving over an exposed surface, not a
+measurement on a slab yard. Published wind correlations for exterior surfaces scatter over roughly a factor
+of two at these speeds, which is why handbooks settle for an average surface film coefficient when the wind
+at the surface is unknown [8]. The flat plate correlation is deliberately not used here: with a fetch between 0.3 m and 10 m
 it gives anything from 1.5 to 7 W/m²K at yard wind speeds, and a two dimensional section cannot say which
 fetch applies. At 0.8 m/s the wind adds about 3 W/m²K on top of 8 W/m²K of natural convection, against
 54 W/m²K of radiation at charge temperature, so the choice is not what sets the answer.
@@ -151,8 +162,11 @@ $$P = \frac{\sum_{above} m_i g}{A_{overlap}}, \qquad H(\theta) = 1.5\,\text{GPa}
 
 - $h_s$ asperity contacts, $h_g$ conduction through the gas in the valleys, $h_r$ radiation across the gap,
   all W/m²K; $R_{scale}$ from the scale thickness and its conductivity
+- the asperity term follows the Cooper, Mikic and Yovanovich model [6]; the plastic-contact coefficient
+  and pressure exponent in it are Yovanovich's, as tabulated in [7]
 - $P$ contact pressure from the weight of everything above divided by the area that actually overlaps, Pa
-- $H(\theta)$ hot hardness, Pa, falling as the steel softens [6], [7]
+- $H(\theta)$ hot hardness, Pa; the model takes it as an exponential fit falling from 1.5 GPa at room
+  temperature, and the part it plays is the microhardness of the contact models in [6] and [7]
 - $\sigma_a$ rms roughness, $m$ mean asperity slope, $w$ waviness gap, $k_g$ gas conductivity
 - the edge draft term raises the gas path within 80 mm of an open edge, where the gap breathes to the yard
 
@@ -180,7 +194,7 @@ The notebook runs its checks before it reports anything, and prints them in the 
 
 | Check | What it compares against | Result on this pile |
 | :--- | :--- | :--- |
-| Plate cooled symmetrically by convection | the analytical Fourier series solution | maximum deviation 2.01 °C, rms 1.51 °C over the 850 to 50 °C range |
+| Plate cooled symmetrically by convection | the analytical Fourier series solution [9] | maximum deviation 2.01 °C, rms 1.51 °C over the 850 to 50 °C range |
 | Energy conservation, closed system | the analytic enthalpy ledger | cumulative error 0.0000 per cent |
 | Energy balance, the real pile | boundary flux against stored energy | 0.92 per cent width section, 0.15 per cent length section |
 
@@ -240,13 +254,15 @@ the surface coefficients and the joint, not from the steel properties, which are
 ## References
 
 [1] British Standards Institution, *BS EN 1993-1-2: Eurocode 3, Design of Steel Structures, Part 1-2:
-General Rules, Structural Fire Design*. London, U.K.: BSI, 2005, clause 3.4.1.2 and Table 3.1.
+General Rules, Structural Fire Design*. London, U.K.: BSI, 2005, clauses 3.4.1.2 and 3.4.1.3, and
+Table 3.1.
 
 [2] S. W. Churchill and H. H. S. Chu, "Correlating equations for laminar and turbulent free convection from
 a vertical plate," *International Journal of Heat and Mass Transfer*, vol. 18, no. 11, pp. 1323-1329, 1975.
 
-[3] F. P. Incropera, D. P. DeWitt, T. L. Bergman, and A. S. Lavine, *Fundamentals of Heat and Mass
-Transfer*, 7th ed. Hoboken, NJ, USA: Wiley, 2011, ch. 9 and Table A.4.
+[3] T. L. Bergman, A. S. Lavine, F. P. Incropera, and D. P. DeWitt, *Fundamentals of Heat and Mass
+Transfer*, 7th ed. Hoboken, NJ, USA: Wiley, 2011, ch. 9 for free convection and Table A.4 for the
+properties of air.
 
 [4] The Engineering Toolbox, "Air properties: thermal conductivity vs. temperature and pressure,"
 atmospheric pressure table. [Online]. Available:
@@ -261,10 +277,10 @@ of Heat and Mass Transfer*, vol. 12, no. 3, pp. 279-300, 1969.
 [7] C. V. Madhusudana, *Thermal Contact Conductance*, 2nd ed. Cham, Switzerland: Springer, 2014.
 
 [8] American Society of Heating, Refrigerating and Air-Conditioning Engineers, *ASHRAE Handbook:
-Fundamentals*. Atlanta, GA, USA: ASHRAE, 2017, ch. 4, surface heat transfer coefficients.
+Fundamentals*. Atlanta, GA, USA: ASHRAE, 2017, ch. 4 heat transfer, and ch. 25 on surface film
+coefficients at exterior surfaces, where the coefficient is taken as an average because the wind at the
+surface is not known.
 
 [9] H. S. Carslaw and J. C. Jaeger, *Conduction of Heat in Solids*, 2nd ed. Oxford, U.K.: Oxford University
 Press, 1959, ch. 3, series solutions for the plate.
 
-[10] J. Pullen, D. E. Williamson, and R. C. Woodgate, "Thermal contact conductance of rough steel surfaces
-at low contact pressures," *Journal of Mechanical Engineering Science*, vol. 12, 1970.
